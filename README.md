@@ -86,14 +86,6 @@ Then open **http://localhost:3000**. The SQLite database is created at `data/per
 
 Requirements: **Node.js 22.5+** (`node:sqlite` is built in).
 
-## 🔑 Demo accounts
-
-| Role | Email | Password |
-|---|---|---|
-| 👑 Admin | `admin@perfume.shop` | `admin123` |
-| 🧑‍💼 Staff | `staff@perfume.shop` | `staff123` |
-| 🛍️ Customer | `customer@perfume.shop` | `customer123` |
-
 ## 📁 Project tour
 
 ```
