@@ -44,7 +44,7 @@ async function rq(method, url, body) {
 /* ---------- utils ---------- */
 const $ = (sel, root) => (root || document).querySelector(sel);
 const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
-const fmtDate = (ms) => ms ? new Date(ms).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) : "—";
+const fmtDT = (ms) => ms ? new Date(ms).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) : "—";
 const fmtDay = (ms) => ms ? new Date(ms).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }) : "—";
 const num = (v) => (v && typeof v === "object" ? (v.count ?? v.total ?? 0) : (v ?? 0));
 const slugify = (s) => String(s || "").toLowerCase().trim().replace(/['’]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
@@ -77,7 +77,7 @@ const PAY_LABEL = {
   paid: "Paid", failed: "Failed", refunded: "Refunded", partially_refunded: "Partially refunded",
 };
 const badge = (txt, cls) => `<span class="badge b-${_esc(cls || txt)}">${_esc(txt)}</span>`;
-const statusBadge = (s) => badge(STATUS_LABEL[s] || s, s);
+const orderStatusBadge = (s) => badge(STATUS_LABEL[s] || s, s);
 const payBadge = (s) => badge(PAY_LABEL[s] || s, s);
 
 const TABS = [
@@ -303,7 +303,7 @@ ROUTES.dashboard = async function (el) {
     ${tableShell(["Name", "Email", "Phone", "Joined"],
       (d.recentCustomers || []).map((c) => `<tr>
         <td>${_esc(c.name)}</td><td>${_esc(c.email)}</td><td>${_esc(c.phone)}</td>
-        <td>${fmtDate(c.created_at)}</td></tr>`).join(""))}
+        <td>${fmtDT(c.created_at)}</td></tr>`).join(""))}
   </div>`;
 };
 
@@ -330,7 +330,7 @@ ROUTES.orders = async function (el, q) {
       pg.items.map((o) => `<tr class="clickable" data-num="${_esc(o.number)}">
         <td><b>${_esc(o.number)}</b></td><td>${_esc(o.name)}<br><small class="muted">${_esc(o.phone)}</small></td>
         <td class="num">${_esc(o.item_count ?? "")}</td><td class="num">${_fmtMMK(o.total)} Ks</td>
-        <td>${payBadge(o.payment_status)}</td><td>${statusBadge(o.status)}</td><td>${fmtDate(o.created_at)}</td></tr>`).join(""), 760);
+        <td>${payBadge(o.payment_status)}</td><td>${orderStatusBadge(o.status)}</td><td>${fmtDT(o.created_at)}</td></tr>`).join(""), 760);
     $$("#of-list tr.clickable", el).forEach((tr) => tr.addEventListener("click", () => openOrder(tr.dataset.num, () => render())));
     $("#of-more", el).innerHTML = pg.hasMore ? loadMoreBtn("of-load") : "";
     const lm = $("#of-load", el);
@@ -356,12 +356,12 @@ async function openOrder(number, onChanged) {
   dr.innerHTML = `
     <button class="btn sm close" data-close>✕ Close</button>
     <h2 style="margin-top:0">${_esc(o.number)}</h2>
-    <div>${statusBadge(o.status)} ${payBadge(o.payment_status)} <span class="muted">${_esc(o.payment_method || "")}</span></div>
+    <div>${orderStatusBadge(o.status)} ${payBadge(o.payment_status)} <span class="muted">${_esc(o.payment_method || "")}</span></div>
     <dl class="kv">
       <dt>Customer</dt><dd>${_esc(o.name)} · ${_esc(o.phone)}${o.email ? " · " + _esc(o.email) : ""}</dd>
       <dt>Address</dt><dd>${_esc(o.address_line)}, ${_esc(o.township)}, ${_esc(o.city || "")} ${_esc(o.region)}</dd>
       <dt>Notes</dt><dd>${_esc(o.notes || "—")}</dd>
-      <dt>Placed</dt><dd>${fmtDate(o.created_at)}</dd>
+      <dt>Placed</dt><dd>${fmtDT(o.created_at)}</dd>
       <dt>Subtotal</dt><dd class="num">${_fmtMMK(o.subtotal)} Ks</dd>
       <dt>Discount${o.coupon_code ? " (" + _esc(o.coupon_code) + ")" : ""}</dt><dd class="num">−${_fmtMMK(o.discount)} Ks</dd>
       <dt>Delivery</dt><dd class="num">${_fmtMMK(o.delivery_fee)} Ks</dd>
@@ -382,15 +382,15 @@ async function openOrder(number, onChanged) {
     <dl class="kv">
       <dt>Courier</dt><dd>${_esc(ship.courier || "—")}</dd>
       <dt>Tracking</dt><dd>${_esc(ship.tracking_ref || "—")}</dd>
-      <dt>Shipped</dt><dd>${fmtDate(ship.shipped_at)}</dd>
-      <dt>Delivered</dt><dd>${fmtDate(ship.delivered_at)}</dd>
+      <dt>Shipped</dt><dd>${fmtDT(ship.shipped_at)}</dd>
+      <dt>Delivered</dt><dd>${fmtDT(ship.delivered_at)}</dd>
     </dl>
     ${nexts.length ? `
     <h3 style="font-size:14px;margin:14px 0 6px">Change status</h3>
     <div class="statusbtns">${nexts.map((s) => `<button class="btn sm${s === "cancelled" ? " danger" : ""}" data-to="${s}">${_esc(STATUS_LABEL[s])}</button>`).join("")}</div>
     <div id="dr-extra"></div>` : `<p class="muted">No further transitions (terminal state).</p>`}
     ${tl.length ? `<h3 style="font-size:14px;margin:14px 0 6px">Timeline</h3>
-      <div class="muted">${tl.map((t) => `<div>· ${fmtDate(t.created_at || t.at)} — ${_esc(t.label || t.status || t.action || "")}</div>`).join("")}</div>` : ""}`;
+      <div class="muted">${tl.map((t) => `<div>· ${fmtDT(t.created_at || t.at)} — ${_esc(t.label || t.status || t.action || "")}</div>`).join("")}</div>` : ""}`;
   document.body.appendChild(dr);
   dr.querySelector("[data-close]").addEventListener("click", closeDrawer);
   dr.querySelectorAll("[data-to]").forEach((b) => b.addEventListener("click", () => {
@@ -445,7 +445,7 @@ ROUTES.payments = async function (el, q) {
         <td>${_esc(p.method)}</td><td class="num">${_fmtMMK(p.amount)} Ks</td>
         <td><small>${_esc(p.txn_ref || "—")}</small></td>
         <td>${f ? `<a href="/api/uploads/proofs/${encodeURIComponent(f)}" target="_blank" rel="noopener"><img class="proofimg" style="max-width:90px;max-height:90px" src="/api/uploads/proofs/${encodeURIComponent(f)}" alt="proof" loading="lazy"></a>` : "—"}</td>
-        <td>${payBadge(p.status)}</td><td>${fmtDate(p.created_at)}</td>
+        <td>${payBadge(p.status)}</td><td>${fmtDT(p.created_at)}</td>
         <td style="white-space:nowrap">${["proof_submitted", "under_review"].includes(p.status) ? `
           <button class="btn sm ok" data-approve="${p.id}">Approve</button>
           <button class="btn sm danger" data-reject="${p.id}">Reject</button>` : `<span class="muted">—</span>`}</td></tr>`;
@@ -891,7 +891,7 @@ ROUTES.movements = async function (el, q) {
   const render = () => {
     $("#mv-list", el).innerHTML = tableShell(["Time", "Bottle", "Type", "Qty (ml)", "Balance", "Order", "Actor", "Note"],
       pg.items.map((m) => `<tr>
-        <td>${fmtDate(m.created_at)}</td><td><small>${_esc(m.bottle_ref || ("#" + m.bottle_id))}</small></td>
+        <td>${fmtDT(m.created_at)}</td><td><small>${_esc(m.bottle_ref || ("#" + m.bottle_id))}</small></td>
         <td>${badge(m.type, m.type === "deduct" ? "cancelled" : m.type === "purchase" ? "delivered" : "confirmed")}</td>
         <td class="num">${_esc(m.qty_ml)}</td><td class="num">${_esc(m.balance_ml)}</td>
         <td>${m.order_id ? _esc(m.order_number || ("#" + m.order_id)) : "—"}</td>
@@ -1042,7 +1042,7 @@ ROUTES.reviews = async function (el, q) {
         <td><small>${_esc(r.user_name || ("#" + r.user_id))}${r.verified ? " ✓" : ""}</small></td>
         <td class="num">${"★".repeat(r.rating)}<br><small class="muted">L${r.longevity || "–"} S${r.sillage || "–"}</small></td>
         <td style="max-width:320px"><b>${_esc(r.title || "")}</b><br><small>${_esc((r.content || "").slice(0, 220))}${(r.content || "").length > 220 ? "…" : ""}</small></td>
-        <td>${badge(r.status, r.status)}</td><td>${fmtDate(r.created_at)}</td>
+        <td>${badge(r.status, r.status)}</td><td>${fmtDT(r.created_at)}</td>
         <td style="white-space:nowrap">
           ${r.status !== "published" ? `<button class="btn sm ok" data-pub="${r.id}">Approve</button>` : ""}
           ${r.status !== "rejected" ? `<button class="btn sm danger" data-rej="${r.id}">Reject</button>` : ""}
@@ -1340,8 +1340,8 @@ ROUTES.outbox = async function (el) {
         <td><small>${_esc(m.to_email)}</small></td>
         <td><small>${_esc(m.subject)}</small></td>
         <td><small>${_esc(m.template || "")}</small></td>
-        <td>${fmtDate(m.created_at)}</td>
-        <td>${m.sent_at ? fmtDate(m.sent_at) : badge("queued", "pending")}</td>
+        <td>${fmtDT(m.created_at)}</td>
+        <td>${m.sent_at ? fmtDT(m.sent_at) : badge("queued", "pending")}</td>
         <td><button class="btn sm" data-resend="${m.id}">Resend</button></td></tr>`).join(""), 900);
     $$("#ob-list [data-resend]", el).forEach((b) => b.addEventListener("click", async () => {
       try { await rq("POST", "/api/admin/outbox/" + b.dataset.resend + "/resend"); toastOk("Resent"); await pg.load(true); render(); }
@@ -1364,7 +1364,7 @@ ROUTES.audit = async function (el) {
   const render = () => {
     $("#au-list", el).innerHTML = tableShell(["Time", "Actor", "Action", "Entity", "Entity ID", "Detail"],
       pg.items.map((a) => `<tr>
-        <td>${fmtDate(a.created_at)}</td>
+        <td>${fmtDT(a.created_at)}</td>
         <td><small>${_esc(a.actor_name || (a.actor_id ? "#" + a.actor_id : "system"))}</small></td>
         <td><b>${_esc(a.action)}</b></td>
         <td><small>${_esc(a.entity || "")}</small></td>
