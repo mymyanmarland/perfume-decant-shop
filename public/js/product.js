@@ -121,7 +121,7 @@
     opts = opts || {};
     var r;
     if (typeof api === 'function') {
-      r = await api(path, { method: opts.method || 'GET', body: opts.body });
+      r = await api('/api' + path, { method: opts.method || 'GET', body: opts.body });
     } else {
       var res = await fetch('/api' + path, {
         method: opts.method || 'GET',
@@ -200,12 +200,20 @@
   function renderGallery() {
     var seed = product.art_seed || product.slug;
     var label = product.name;
+    var main = $('artMain');
+    var thumbs = $('pdThumbs');
+    // Uploaded photo takes over the whole gallery; otherwise show art variants.
+    if (typeof productVisual === 'function' && (product.image_url || product.image)) {
+      main.insertAdjacentHTML('afterbegin',
+        productVisual(product, '') .replace('loading="lazy"', ''));
+      thumbs.innerHTML = '';
+      thumbs.style.display = 'none';
+    } else {
     // main + 3 gradient variants (derived seeds) as thumbnails
     var arts = [seed, seed + '-alt1', seed + '-alt2', seed + '-alt3'];
-    var main = $('artMain');
     main.insertAdjacentHTML('afterbegin', artHTML(arts[0], label, 'pd-art-img', 'width:100%;height:100%;object-fit:cover'));
-    var thumbs = $('pdThumbs');
     thumbs.innerHTML = '';
+    thumbs.style.display = '';
     arts.forEach(function (sd, i) {
       var b = document.createElement('button');
       b.type = 'button';
@@ -221,6 +229,7 @@
       });
       thumbs.appendChild(b);
     });
+    } // end art-variant gallery
     var badges = '';
     if (product.is_new) badges += '<span class="badge new">NEW</span>';
     if (product.bestseller) badges += '<span class="badge best">BESTSELLER</span>';
@@ -495,7 +504,9 @@
       var a = document.createElement('a');
       a.className = 'p-card rel-card';
       a.href = '/product.html?slug=' + encodeURIComponent(p.slug);
-      a.innerHTML = '<div class="p-art">' + artHTML(p.art_seed || p.slug, p.name, '', '') + '</div>' +
+      a.innerHTML = '<div class="p-art">' + (typeof productVisual === 'function'
+        ? productVisual(p, artHTML(p.art_seed || p.slug, p.name, '', ''))
+        : artHTML(p.art_seed || p.slug, p.name, '', '')) + '</div>' +
         '<div class="p-body"><div class="p-brand">' + esc(p.brand || '') + '</div>' +
         '<h3 class="p-name">' + esc(p.name) + '</h3>' +
         '<div class="p-stars">' + stars(p.rating_avg) + '</div>' +

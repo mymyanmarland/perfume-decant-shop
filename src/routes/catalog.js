@@ -13,7 +13,7 @@ const fail = (res, status, error, extra = {}) =>
 /* ---------- shared product-list building blocks ---------- */
 const LIST_COLS = `
   SELECT p.id, p.slug, p.name, p.concentration, p.family, p.gender,
-         p.seasons, p.occasions, p.longevity, p.sillage,
+         p.seasons, p.occasions, p.longevity, p.sillage, p.image,
          p.rating_avg, p.rating_count, p.featured, p.is_new, p.bestseller, p.art_seed,
          b.name AS brand_name, b.slug AS brand_slug,
          MIN(v.price) AS min_price, MAX(v.price) AS max_price,
@@ -46,6 +46,8 @@ function summaryRow(r) {
     is_new: !!r.is_new,
     bestseller: !!r.bestseller,
     art_seed: r.art_seed,
+    image: r.image || "",
+    image_url: r.image ? "/uploads/products/" + r.image : "",
     min_price: r.min_price,
     max_price: r.max_price,
     in_stock: r.in_stock > 0,
@@ -359,6 +361,8 @@ router.get("/products/:slug", (req, res) => {
       sillage: p.sillage,
       origin: p.origin,
       art_seed: p.art_seed,
+      image: p.image || "",
+      image_url: p.image ? "/uploads/products/" + p.image : "",
       authenticity: p.authenticity,
       authenticity_my: p.authenticity_my,
       featured: !!p.featured,

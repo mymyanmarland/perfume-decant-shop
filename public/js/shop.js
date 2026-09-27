@@ -92,7 +92,7 @@
     opts = opts || {};
     var r;
     if (typeof api === 'function') {
-      r = await api(path, { method: opts.method || 'GET', body: opts.body });
+      r = await api('/api' + path, { method: opts.method || 'GET', body: opts.body });
     } else {
       var res = await fetch('/api' + path, {
         method: opts.method || 'GET',
@@ -111,10 +111,12 @@
     }
     return r;
   }
-  function artImg(seed, label, cls) {
+  function artImg(p, cls) {
+    var seed = p.art_seed || p.slug, label = p.name;
     try {
       if (typeof perfumeArt === 'function') {
         var r = perfumeArt(seed, label);
+        if (typeof productVisual === 'function') r = productVisual(p, r);
         if (typeof r === 'string' && r) {
           if (r.charAt(0) === '<') {
             return '<span class="' + cls + '" role="img" aria-label="' + esc(label) + '">' + r + '</span>';
@@ -302,7 +304,7 @@
     var rc = p.rating_count ? ' <span class="cnt">(' + p.rating_count + ')</span>' : '';
     return '<article class="p-card">' +
       '<div class="p-art"><a href="/product.html?slug=' + encodeURIComponent(p.slug) + '" aria-label="' + esc(p.name) + '">' +
-      artImg(p.art_seed || p.slug, p.name, '') + '</a>' +
+      artImg(p, '') + '</a>' +
       (badges ? '<div class="p-badges">' + badges + '</div>' : '') +
       '<button class="fav-btn' + fav + '" data-fav="' + p.id + '" aria-label="favorite">' +
       (favSet[p.id] ? '♥' : '♡') + '</button></div>' +

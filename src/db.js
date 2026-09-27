@@ -310,6 +310,15 @@ CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions(user_id);
 
 db.exec(SCHEMA);
 
+/* Lightweight migrations for columns added after first release. */
+(function migrate() {
+  const cols = db.prepare("PRAGMA table_info(products)").all().map((c) => c.name);
+  if (!cols.includes("image")) {
+    db.exec("ALTER TABLE products ADD COLUMN image TEXT NOT NULL DEFAULT ''");
+    console.log("Migrated: products.image column added.");
+  }
+})();
+
 /* ---------- tiny helpers ---------- */
 function get(sql, ...params) {
   return db.prepare(sql).get(...params);

@@ -289,7 +289,9 @@
         : "";
       return '<div class="lx-card lx-fav-card">' +
         '<a href="/product.html?slug=' + encodeURIComponent(p.slug) + '" style="text-decoration:none;color:inherit">' +
-        artHTML(p.art_seed || p.id, p.name, "lg") +
+        (typeof productVisual === "function"
+          ? productVisual(p, artHTML(p.art_seed || p.id, p.name, "lg"))
+          : artHTML(p.art_seed || p.id, p.name, "lg")) +
         '<div class="lx-fav-brand">' + escHtml(p.brand || "") + "</div>" +
         '<div class="lx-fav-name">' + escHtml(p.name) + "</div>" +
         '<div class="lx-fav-price">' + escHtml(price) + "</div></a>" +

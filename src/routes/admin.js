@@ -343,6 +343,19 @@ router.post("/products", (req, res) => {
     p.origin || "", p.art_seed ?? 0, p.authenticity || "", p.authenticity_my || "",
     p.status || "active", p.featured || 0, p.is_new || 0, p.bestseller || 0, Date.now());
   const id = r.lastInsertRowid;
+  // Shop policy: every product sells as 5ml + 10ml decants. Create both
+  // variants now (price 0 / stock 0 until the admin prices them in the
+  // Variants tab — zero stock blocks checkout, so nothing sells at 0 Ks).
+  const prefix = String(slug).split("-").map((w) => w[0]).join("").toUpperCase().slice(0, 3) || "PDS";
+  let vsort = 0;
+  for (const ml of [5, 10]) {
+    let sku = `${prefix}-${ml}ML`, n = 0;
+    while (get("SELECT id FROM variants WHERE sku = ?", sku)) { n += 1; sku = `${prefix}-${ml}ML-${n}`; }
+    run(`INSERT INTO variants (product_id, name, size_ml, sku, price, compare_at, atomizer,
+                               stock_qty, low_threshold, active, sort)
+         VALUES (?,?,?,?,?,?, 'Glass spray atomizer', 0, 3, 1, ?)`,
+      id, `${ml}ml Decant`, ml, sku, 0, null, vsort++);
+  }
   audit(req.user.id, "product_create", "product", id, `${p.name} (${slug})`);
   ok(res, { id, slug });
 });
@@ -374,6 +387,56 @@ router.delete("/products/:id", (req, res) => {
   run("UPDATE products SET status = 'archived' WHERE id = ?", prod.id);
   audit(req.user.id, "product_archive", "product", prod.id, prod.name);
   ok(res, { id: prod.id, status: "archived" });
+});
+
+/* ---------- product images ---------- */
+const path = require("path");
+const fs = require("fs");
+const multer = require("multer");
+
+const PRODUCT_IMG_DIR = path.join(__dirname, "..", "..", "data", "uploads", "products");
+fs.mkdirSync(PRODUCT_IMG_DIR, { recursive: true });
+const IMG_EXT = { "image/jpeg": ".jpg", "image/png": ".png", "image/webp": ".webp" };
+const productImgStorage = multer.diskStorage({
+  destination: (_req, _file, cb) => {
+    fs.mkdirSync(PRODUCT_IMG_DIR, { recursive: true });
+    cb(null, PRODUCT_IMG_DIR);
+  },
+  filename: (req, file, cb) => {
+    const ext = IMG_EXT[file.mimetype] || "";
+    const pid = String(req.params.id || "p").replace(/[^0-9]/g, "") || "p";
+    cb(null, `prod-${pid}-${Date.now()}${ext}`);
+  },
+});
+const uploadProductImg = multer({
+  storage: productImgStorage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
+  fileFilter: (_req, file, cb) => {
+    if (IMG_EXT[file.mimetype]) return cb(null, true);
+    cb(new Error("invalid_file_type")); // jpg/jpeg/png/webp only
+  },
+});
+function removeUploadFile(p) {
+  try { if (p) fs.unlinkSync(p); } catch (_) { /* already gone */ }
+}
+
+router.post("/products/:id/image", uploadProductImg.single("image"), (req, res) => {
+  const prod = get("SELECT id, image FROM products WHERE id = ?", req.params.id);
+  if (!prod) { removeUploadFile(req.file && req.file.path); return bad(res, "not_found", 404); }
+  if (!req.file) return bad(res, "validation", 400, { fieldErrors: { image: "required" } });
+  if (prod.image) removeUploadFile(path.join(PRODUCT_IMG_DIR, path.basename(prod.image)));
+  run("UPDATE products SET image = ? WHERE id = ?", req.file.filename, prod.id);
+  audit(req.user && req.user.id, "product_image_uploaded", "product", prod.id, req.file.filename);
+  return ok(res, { image: req.file.filename, url: "/uploads/products/" + req.file.filename });
+});
+
+router.delete("/products/:id/image", (req, res) => {
+  const prod = get("SELECT id, image FROM products WHERE id = ?", req.params.id);
+  if (!prod) return bad(res, "not_found", 404);
+  if (prod.image) removeUploadFile(path.join(PRODUCT_IMG_DIR, path.basename(prod.image)));
+  run("UPDATE products SET image = '' WHERE id = ?", prod.id);
+  audit(req.user && req.user.id, "product_image_removed", "product", prod.id, "");
+  return ok(res, { ok: true });
 });
 
 /* ---------- variants ---------- */
@@ -1006,4 +1069,17 @@ router.get("/audit", requireAdmin, (req, res) => {
   ok(res, paged(req, base, [], "a.id", "id"));
 });
 
+/* multer / upload errors → JSON envelope (must sit after the routes above) */
+router.use((err, _req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === "LIMIT_FILE_SIZE") return bad(res, "file_too_large", 400);
+    return bad(res, "upload_failed", 400);
+  }
+  if (err && err.message === "invalid_file_type") {
+    return bad(res, "invalid_file_type", 400);
+  }
+  return next(err);
+});
+
 module.exports = router;
+module.exports.PRODUCT_IMG_DIR = PRODUCT_IMG_DIR;

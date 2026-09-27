@@ -13,7 +13,7 @@ function priceCart(items, { couponCode = "", zoneId = null, userId = null } = {}
   const errors = [];
   for (const it of items) {
     const v = get(
-      `SELECT v.*, p.name AS product_name, p.status AS pstatus, p.slug AS pslug
+      `SELECT v.*, p.name AS product_name, p.status AS pstatus, p.slug AS pslug, p.image AS product_image
        FROM variants v JOIN products p ON p.id = v.product_id
        WHERE v.id = ?`, it.variant_id);
     if (!v || !v.active || v.pstatus !== "active") {
@@ -27,6 +27,7 @@ function priceCart(items, { couponCode = "", zoneId = null, userId = null } = {}
     }
     lines.push({
       variant_id: v.id, product_id: v.product_id, product_name: v.product_name,
+      product_image: v.product_image || "",
       variant_name: v.name, size_ml: v.size_ml, unit_price: v.price,
       qty, line_total: v.price * qty, stock_qty: v.stock_qty,
     });

@@ -114,7 +114,7 @@
 
   function lineHTML(l) {
     return '<div class="lx-line" data-variant="' + l.variant_id + '">' +
-      artHTML(l.product_id, l.product_name) +
+      lineArt(l) +
       '<div>' +
         '<div class="lx-line-top"><div>' +
           '<div class="lx-line-name">' + escHtml(l.product_name) + "</div>" +

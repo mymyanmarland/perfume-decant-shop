@@ -142,9 +142,19 @@ function perfumeArt(seed, label) {
   '</svg>';
 }
 
+/* Uploaded product photo when present, otherwise the generated art.
+ * p: product object (image_url or image from the API). artHtml: fallback HTML. */
+function productVisual(p, artHtml) {
+  var url = p && (p.image_url || (p.image ? '/uploads/products/' + p.image : ''));
+  if (url) {
+    return '<img src="' + esc(url) + '" alt="' + esc((p && p.name) || '') +
+      '" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block">';
+  }
+  return artHtml;
+}
+
 /* ---------- status badges ---------- */
-function statusBadge(status) {
-  if (!status) return '';
+function statusBadge(status) {  if (!status) return '';
   const isPay = String(status).indexOf('proof') === 0 ||
     ['pending', 'paid', 'failed', 'refunded'].indexOf(status) >= 0;
   const key = (isPay ? 'ps.' : 'st.') + status;
@@ -171,7 +181,7 @@ function productCard(p) {
   const slug = esc(p.slug || '');
   const name = esc(p.name || '');
   const brand = esc(p.brand || '');
-  const art = perfumeArt(p.art_seed || p.id, p.name);
+  const art = productVisual(p, perfumeArt(p.art_seed || p.id, p.name));
   const flags = [];
   if (p.is_new) flags.push('<span class="badge b-new">' + esc(t('shop.sort_new')) + '</span>');
   if (p.bestseller) flags.push('<span class="badge b-best">' + esc(t('home.best_sellers')) + '</span>');

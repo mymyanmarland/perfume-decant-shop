@@ -6,6 +6,7 @@ const path = require("path");
 
 const { attachUser } = require("./src/auth");
 const { seed } = require("./src/seed");
+const { normalizeVariants } = require("./src/migrate");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -30,6 +31,7 @@ app.use("/api/auth/", (req, res, next) => {
 app.use(attachUser);
 
 const checkoutModule = require("./src/routes/checkout");
+const adminRouter = require("./src/routes/admin");
 app.use("/api/auth", require("./src/routes/auth"));
 app.use("/api/addresses", require("./src/routes/addresses"));
 app.use("/api", require("./src/routes/catalog"));   // brands, filters, products
@@ -38,9 +40,10 @@ app.use("/api", require("./src/routes/favorites")); // favorites
 app.use("/api", require("./src/routes/reviews"));   // reviews
 app.use("/api/checkout", checkoutModule);           // checkout
 app.use("/api/uploads", checkoutModule.uploadsRouter); // protected proof files
+app.use("/uploads/products", express.static(adminRouter.PRODUCT_IMG_DIR)); // public product photos
 app.use("/api/orders", require("./src/routes/orders")); // orders
 app.use("/api", require("./src/routes/cms"));       // banners, content, public settings
-app.use("/api/admin", require("./src/routes/admin"));
+app.use("/api/admin", adminRouter);
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -58,4 +61,5 @@ app.use((err, req, res, _next) => {
 });
 
 seed();
+normalizeVariants(); // enforce 5ml + 10ml shop policy on every startup
 app.listen(PORT, () => console.log(`Perfume Decant Shop listening on :${PORT}`));

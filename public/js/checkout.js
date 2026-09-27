@@ -201,7 +201,7 @@
     var h = "<h3>" + escHtml(tx("checkout.summary", "Order summary")) + "</h3>";
     h += state.lines.map(function (l) {
       return '<div class="lx-line"><div style="display:flex;gap:10px;align-items:center">' +
-        artHTML(l.product_id, l.product_name) +
+        lineArt(l) +
         "<div><div class='lx-line-name' style='font-size:.9rem'>" + escHtml(l.product_name) + "</div>" +
         '<div class="lx-line-var">' + escHtml(l.variant_name) + " · " + escHtml(l.size_ml) + " ml × " + l.qty + "</div></div></div>" +
         '<div class="lx-line-total" style="font-size:.95rem">' + escHtml(mmk(l.line_total)) + "</div></div>";

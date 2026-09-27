@@ -127,6 +127,16 @@
     return '<span class="' + clsAttr + '"></span>';
   };
 
+  /* ---------- cart line artwork ----------
+     Uploaded product photo when the line carries one, else generated art. */
+  window.lineArt = function (l) {
+    if (l && l.product_image) {
+      return '<span class="lx-art"><img src="/uploads/products/' + escHtml(String(l.product_image)).replace(/"/g, "") +
+        '" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block"></span>';
+    }
+    return window.artHTML(l && l.product_id, l && l.product_name);
+  };
+
   /* ---------- API errors ----------
      Sibling api() throws Error with .code / .fieldErrors. errText()
      delegates to the sibling apiErrorMessage() for EN+MM messages. */

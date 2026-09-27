@@ -496,7 +496,10 @@ ROUTES.products = async function (el, q) {
       pg.items.map((p) => {
         const flags = [p.featured ? "featured" : "", p.is_new ? "new" : "", p.bestseller ? "bestseller" : ""].filter(Boolean).join(" · ");
         return `<tr>
-        <td><b>${_esc(p.name)}</b><br><small class="muted">${_esc(p.slug)} · ${_esc(p.concentration || "")}</small></td>
+        <td><div style="display:flex;gap:10px;align-items:center">${p.image
+          ? `<img src="/uploads/products/${_esc(p.image)}" alt="" style="width:44px;height:44px;object-fit:cover;border-radius:10px;border:1px solid var(--line)">`
+          : `<span style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#f6e3d3,#e7d3f5);display:inline-flex;align-items:center;justify-content:center;font-family:serif;color:#4A3428">${_esc((p.name || "P").trim().charAt(0).toUpperCase())}</span>`}
+          <span><b>${_esc(p.name)}</b><br><small class="muted">${_esc(p.slug)} · ${_esc(p.concentration || "")}</small></span></div></td>
         <td>${_esc(p.brand || p.brand_name || "")}</td>
         <td class="num">${_esc(p.variant_count ?? "")}</td>
         <td class="num">${p.min_price != null ? _fmtMMK(p.min_price) + "–" + _fmtMMK(p.max_price) + " Ks" : "—"}</td>
@@ -581,6 +584,19 @@ function productModal(p, onSaved) {
       <label><input type="checkbox" name="is_new"${p.is_new ? " checked" : ""}> New arrival</label>
       <label><input type="checkbox" name="bestseller"${p.bestseller ? " checked" : ""}> Bestseller</label>
     </div>
+    ${isNew ? "" : `
+    <div style="margin-top:16px;border-top:1px solid var(--line);padding-top:14px">
+      <label style="font-weight:600">Product photo</label>
+      <div id="pimg-prev" style="margin:8px 0">${p.image
+        ? `<img src="/uploads/products/${_esc(p.image)}" alt="" style="width:120px;height:120px;object-fit:cover;border-radius:12px;border:1px solid var(--line)">`
+        : `<span class="muted">No photo uploaded — generated art is shown.</span>`}</div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <input type="file" id="pimg-file" accept="image/jpeg,image/png,image/webp">
+        <button type="button" class="btn sm" id="pimg-up">Upload photo</button>
+        ${p.image ? `<button type="button" class="btn sm danger" id="pimg-del">Remove photo</button>` : ""}
+      </div>
+      <small class="muted">JPG / PNG / WebP, max 5 MB. The photo replaces the generated art everywhere in the shop.</small>
+    </div>`}
     ${modalFooter(isNew ? "Create product" : "Save changes")}
   </form>`);
   wireModal(body, async (form) => {
@@ -611,6 +627,49 @@ function productModal(p, onSaved) {
     toastOk(isNew ? "Product created" : "Product saved");
     onSaved();
   });
+  // Photo upload (existing products only — needs an id)
+  if (!isNew) {
+    const upBtn = body.querySelector("#pimg-up");
+    const delBtn = body.querySelector("#pimg-del");
+    const prev = body.querySelector("#pimg-prev");
+    const paint = (img) => {
+      p.image = img || "";
+      prev.innerHTML = img
+        ? `<img src="/uploads/products/${_esc(img)}" alt="" style="width:120px;height:120px;object-fit:cover;border-radius:12px;border:1px solid var(--line)">`
+        : `<span class="muted">No photo uploaded — generated art is shown.</span>`;
+      if (delBtn) delBtn.style.display = img ? "" : "none";
+    };
+    if (upBtn) upBtn.addEventListener("click", async () => {
+      const file = body.querySelector("#pimg-file").files[0];
+      if (!file) { toastErr("Choose a photo first"); return; }
+      upBtn.disabled = true;
+      try {
+        const fd = new FormData();
+        fd.append("image", file);
+        const res = await fetch("/api/admin/products/" + p.id + "/image", {
+          method: "POST", credentials: "same-origin", body: fd,
+        });
+        const j = await res.json();
+        if (!j || !j.ok) throw Object.assign(new Error(j && j.error || "upload_failed"), { code: j && j.error });
+        paint(j.data.image);
+        toastOk("Photo uploaded");
+        onSaved();
+      } catch (e) {
+        toastErr(e.code === "file_too_large" ? "Photo must be under 5 MB"
+          : e.code === "invalid_file_type" ? "JPG, PNG or WebP only"
+          : (e.code || "Upload failed"));
+      } finally { upBtn.disabled = false; }
+    });
+    if (delBtn) delBtn.addEventListener("click", async () => {
+      if (!confirm("Remove this product's photo?")) return;
+      try {
+        await rq("DELETE", "/api/admin/products/" + p.id + "/image");
+        paint("");
+        toastOk("Photo removed");
+        onSaved();
+      } catch (e) { toastErr(e.code || "Remove failed"); }
+    });
+  }
 }
 
 async function vVariants(el, pid) {
