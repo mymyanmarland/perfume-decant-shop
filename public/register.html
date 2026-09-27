@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Create Account — Perfume Decant Shop</title>
+<link rel="stylesheet" href="/css/fonts.css">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/shopper.css">
+</head>
+<body>
+<div id="siteHeader"></div>
+<main class="lx-wrap lx-narrow">
+  <div class="lx-card lx-auth-card">
+    <h1 class="lx-title" data-i18n="auth.reg_title">Create an account</h1>
+    <p class="lx-subtitle lx-center" data-i18n="auth.reg_sub">Faster checkout, order tracking and favorites.</p>
+    <div id="auth-banner"></div>
+    <form id="register-form" novalidate>
+      <div class="lx-field">
+        <label for="reg-name" data-i18n="auth.name">Full name</label>
+        <input class="lx-input" id="reg-name" autocomplete="name">
+        <div class="lx-err" data-err-for="name"></div>
+      </div>
+      <div class="lx-field">
+        <label for="reg-email" data-i18n="auth.email">Email</label>
+        <input class="lx-input" id="reg-email" type="email" autocomplete="email">
+        <div class="lx-err" data-err-for="email"></div>
+      </div>
+      <div class="lx-field">
+        <label for="reg-phone" data-i18n="auth.phone">Phone</label>
+        <input class="lx-input" id="reg-phone" inputmode="tel" placeholder="09XXXXXXXXX" autocomplete="tel">
+        <div class="lx-err" data-err-for="phone"></div>
+        <div class="lx-hint" data-i18n="auth.phone_hint">Myanmar mobile number starting with 09.</div>
+      </div>
+      <div class="lx-field">
+        <label for="reg-password" data-i18n="auth.password">Password</label>
+        <input class="lx-input" id="reg-password" type="password" autocomplete="new-password">
+        <div class="lx-err" data-err-for="password"></div>
+        <div class="lx-hint" data-i18n="auth.pw_hint">At least 6 characters.</div>
+      </div>
+      <div class="lx-field">
+        <label for="reg-confirm" data-i18n="auth.confirm">Confirm password</label>
+        <input class="lx-input" id="reg-confirm" type="password" autocomplete="new-password">
+        <div class="lx-err" data-err-for="confirm"></div>
+      </div>
+      <button class="lx-btn" type="submit" data-i18n="auth.reg_btn">Create account</button>
+    </form>
+    <hr class="lx-div">
+    <p class="lx-center" style="font-size:.9rem">
+      <span data-i18n="auth.have_account">Already have an account?</span>
+      <a class="lx-link" id="to-login" href="/login.html" data-i18n="auth.login_btn">Log in</a>
+    </p>
+  </div>
+</main>
+<div id="siteFooter"></div>
+<script src="/js/i18n.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/shopper.js"></script>
+<script src="/js/shopper-i18n.js"></script>
+<script src="/js/auth.js"></script>
+</body>
+</html>

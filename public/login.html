@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Log In — Perfume Decant Shop</title>
+<link rel="stylesheet" href="/css/fonts.css">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/shopper.css">
+</head>
+<body>
+<div id="siteHeader"></div>
+<main class="lx-wrap lx-narrow">
+  <div class="lx-card lx-auth-card">
+    <h1 class="lx-title" data-i18n="auth.login_title">Welcome back</h1>
+    <p class="lx-subtitle lx-center" data-i18n="auth.login_sub">Log in to track orders and check out faster.</p>
+    <div id="auth-banner"></div>
+    <form id="login-form" novalidate>
+      <div class="lx-field">
+        <label for="login-email" data-i18n="auth.email">Email</label>
+        <input class="lx-input" id="login-email" type="email" autocomplete="email">
+        <div class="lx-err" data-err-for="email"></div>
+      </div>
+      <div class="lx-field">
+        <label for="login-password" data-i18n="auth.password">Password</label>
+        <input class="lx-input" id="login-password" type="password" autocomplete="current-password">
+        <div class="lx-err" data-err-for="password"></div>
+      </div>
+      <button class="lx-btn" type="submit" data-i18n="auth.login_btn">Log in</button>
+    </form>
+    <p class="lx-center lx-mt" style="font-size:.9rem">
+      <a class="lx-link" href="/reset.html" data-i18n="auth.forgot">Forgot password?</a>
+    </p>
+    <hr class="lx-div">
+    <p class="lx-center" style="font-size:.9rem">
+      <span data-i18n="auth.no_account">New here?</span>
+      <a class="lx-link" id="to-register" href="/register.html" data-i18n="auth.create">Create an account</a>
+    </p>
+  </div>
+</main>
+<div id="siteFooter"></div>
+<script src="/js/i18n.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/shopper.js"></script>
+<script src="/js/shopper-i18n.js"></script>
+<script src="/js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Perfume Decant Shop</title>
+<link rel="stylesheet" href="/css/style.css">
+<style>
+/* Admin SPA — luxury system: cream, pastel glass, dark brown. Self-contained so the
+   admin works even if the shared stylesheet is still being built. */
+:root{
+  --cream:#faf6ee; --cream-2:#f4ecdd; --ink:#3d2b1f; --ink-soft:#6b5545;
+  --gold:#c49a5b; --gold-deep:#a97f3f; --rose:#f3dfe0; --sage:#dde8d5;
+  --glass:rgba(255,255,255,.62); --line:rgba(61,43,31,.14);
+  --danger:#b3402e; --ok:#3f7a4e;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(1200px 600px at 80% -10%,#f6e8d4 0%,var(--cream) 55%) fixed,var(--cream);color:var(--ink);
+  font-family:"Segoe UI",system-ui,-apple-system,sans-serif;font-size:14px;line-height:1.5}
+a{color:var(--gold-deep)}
+#app{min-height:100vh}
+/* ---------- topbar ---------- */
+.topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:12px;
+  padding:10px 20px;background:rgba(250,246,238,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.brandmark{font-weight:700;letter-spacing:.06em;font-size:15px}
+.brandmark small{display:block;font-size:10px;font-weight:400;color:var(--ink-soft);letter-spacing:.2em}
+.topbar .spacer{flex:1}
+.langbtn{border:1px solid var(--line);background:var(--glass);border-radius:999px;padding:5px 12px;cursor:pointer;color:var(--ink);font-size:12px}
+.langbtn.active{background:var(--ink);color:#f7f1e5;border-color:var(--ink)}
+.who{font-size:12px;color:var(--ink-soft)}
+.btn{border:1px solid var(--line);background:var(--glass);color:var(--ink);border-radius:10px;
+  padding:7px 14px;cursor:pointer;font-size:13px;backdrop-filter:blur(6px)}
+.btn:hover{border-color:var(--gold);box-shadow:0 2px 10px rgba(196,154,91,.25)}
+.btn.primary{background:linear-gradient(135deg,#4a3524,#2f2117);color:#f7f1e5;border-color:#2f2117}
+.btn.danger{color:var(--danger);border-color:rgba(179,64,46,.4)}
+.btn.ok{color:var(--ok);border-color:rgba(63,122,78,.4)}
+.btn.sm{padding:4px 10px;font-size:12px;border-radius:8px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+/* ---------- layout ---------- */
+.shell{display:flex;min-height:calc(100vh - 57px)}
+.sidebar{width:216px;flex:0 0 216px;padding:14px 10px;border-right:1px solid var(--line);
+  background:rgba(255,255,255,.35);backdrop-filter:blur(8px);position:sticky;top:57px;height:calc(100vh - 57px);overflow:auto}
+.navitem{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:transparent;
+  color:var(--ink);padding:9px 12px;border-radius:10px;cursor:pointer;font-size:13.5px;margin-bottom:2px}
+.navitem:hover{background:rgba(196,154,91,.14)}
+.navitem.active{background:linear-gradient(135deg,rgba(196,154,91,.28),rgba(196,154,91,.12));font-weight:600;
+  box-shadow:inset 0 0 0 1px rgba(196,154,91,.35)}
+.navitem .ico{width:22px;text-align:center;opacity:.75}
+.main{flex:1;padding:22px;min-width:0;max-width:1180px}
+.pagehead{display:flex;align-items:center;gap:12px;margin:0 0 16px;flex-wrap:wrap}
+.pagehead h1{font-size:22px;margin:0;font-weight:700;letter-spacing:.01em}
+.pagehead .sub{color:var(--ink-soft);font-size:13px}
+/* ---------- cards / stats ---------- */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:18px}
+.stat{background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:14px 16px;backdrop-filter:blur(8px)}
+.stat .k{font-size:11.5px;color:var(--ink-soft);letter-spacing:.08em;text-transform:uppercase}
+.stat .v{font-size:24px;font-weight:700;margin-top:4px}
+.stat .v small{font-size:12px;font-weight:400;color:var(--ink-soft)}
+.panel{background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:18px;backdrop-filter:blur(8px)}
+.panel h2{font-size:15px;margin:0 0 12px;font-weight:700}
+.panel h2 .mm{font-weight:400;color:var(--ink-soft);font-size:12px;margin-left:6px}
+/* ---------- tables ---------- */
+.tblwrap{overflow-x:auto;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.5)}
+table.tbl{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
+.tbl th{background:rgba(61,43,31,.06);text-align:left;padding:9px 12px;font-size:11.5px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink-soft);white-space:nowrap;position:sticky;top:0}
+.tbl td{padding:9px 12px;border-top:1px solid var(--line);vertical-align:top}
+.tbl tr:hover td{background:rgba(196,154,91,.07)}
+.tbl tr.clickable{cursor:pointer}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:11.5px;font-weight:600;white-space:nowrap;
+  background:rgba(61,43,31,.08);border:1px solid var(--line)}
+.badge.b-pending_payment,.badge.b-pending,.badge.b-proof_submitted{background:#f7ecd2;border-color:#e3c98a;color:#7c5a17}
+.badge.b-payment_verification,.badge.b-under_review{background:#e8e4fb;border-color:#b9aef0;color:#4a3f9e}
+.badge.b-confirmed,.badge.b-preparing{background:#dceefb;border-color:#9cc7e8;color:#1f5d8a}
+.badge.b-packed,.badge.b-shipped{background:#e3f0e4;border-color:#a9cba9;color:#2c6b34}
+.badge.b-delivered,.badge.b-paid{background:#d7ecd9;border-color:#8fc194;color:#236b2c}
+.badge.b-cancelled,.badge.b-failed,.badge.b-rejected{background:#f6dcd6;border-color:#dfa191;color:#96351f}
+.badge.b-refunded,.badge.b-partially_refunded{background:#efe6d8;border-color:#cdb894;color:#6e5320}
+.badge.b-active,.badge.b-published{background:#d7ecd9;border-color:#8fc194;color:#236b2c}
+.badge.b-draft{background:#eee;border-color:#ccc;color:#666}
+.badge.b-archived{background:#e2e2e2;border-color:#bbb;color:#555}
+/* ---------- forms ---------- */
+.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.toolbar .spacer{flex:1}
+input[type=text],input[type=number],input[type=email],input[type=password],input[type=date],input[type=datetime-local],
+select,textarea{border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:13.5px;background:rgba(255,255,255,.75);
+  color:var(--ink);font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:2px solid rgba(196,154,91,.5);border-color:var(--gold)}
+textarea{width:100%;min-height:90px;resize:vertical}
+label.f{display:block;font-size:12px;color:var(--ink-soft);margin:10px 0 4px;letter-spacing:.04em}
+label.f input,label.f select,label.f textarea{margin-top:4px;width:100%}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.checks{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:6px}
+.checks label{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer}
+/* ---------- modal ---------- */
+.overlay{position:fixed;inset:0;background:rgba(45,30,18,.45);backdrop-filter:blur(3px);z-index:100;
+  display:flex;align-items:flex-start;justify-content:center;padding:34px 14px;overflow:auto}
+.modal{background:#fbf7ef;border:1px solid var(--line);border-radius:18px;max-width:680px;width:100%;padding:22px 24px;
+  box-shadow:0 24px 70px rgba(45,30,18,.35)}
+.modal h2{margin:0 0 6px;font-size:18px}
+.modal .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+/* ---------- drawer ---------- */
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,96vw);background:#fbf7ef;z-index:100;
+  border-left:1px solid var(--line);box-shadow:-24px 0 60px rgba(45,30,18,.25);overflow:auto;padding:22px}
+.drawer .close{float:right}
+.kv{display:grid;grid-template-columns:130px 1fr;gap:4px 10px;font-size:13px;margin:10px 0}
+.kv dt{color:var(--ink-soft)} .kv dd{margin:0}
+.statusbtns{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+/* ---------- toast ---------- */
+#toasts{position:fixed;bottom:18px;right:18px;z-index:200;display:flex;flex-direction:column;gap:8px}
+.toastmsg{background:#2f2117;color:#f7f1e5;padding:10px 16px;border-radius:12px;font-size:13.5px;
+  box-shadow:0 8px 24px rgba(0,0,0,.3);animation:tin .25s ease}
+.toastmsg.err{background:#7a2a1c}
+@keyframes tin{from{transform:translateY(8px);opacity:0}}
+.empty{padding:26px;text-align:center;color:var(--ink-soft);font-size:13px}
+.forbidden{max-width:520px;margin:80px auto;text-align:center;background:var(--glass);border:1px solid var(--line);
+  border-radius:18px;padding:40px 30px}
+.proofimg{max-width:220px;max-height:220px;border-radius:10px;border:1px solid var(--line);cursor:zoom-in}
+.muted{color:var(--ink-soft);font-size:12.5px}
+.center{text-align:center}
+.loadmore{display:block;margin:14px auto}
+@media (max-width:900px){
+  .shell{flex-direction:column}
+  .sidebar{width:100%;flex:none;position:static;height:auto;display:flex;overflow-x:auto;padding:8px;gap:4px;border-right:0;border-bottom:1px solid var(--line)}
+  .navitem{white-space:nowrap;width:auto;margin:0}
+  .main{padding:14px}
+  .grid2{grid-template-columns:1fr}
+  .kv{grid-template-columns:110px 1fr}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="center" style="padding:80px 20px">
+    <div class="muted" data-i18n="admin.loading">Loading admin…</div>
+  </div>
+</div>
+<div id="toasts"></div>
+<script src="/js/i18n.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>

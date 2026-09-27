@@ -1,0 +1,9 @@
+node_modules/
+data/*.db
+data/*.db-journal
+data/*.db-wal
+data/*.db-shm
+data/uploads/
+data/.cookie_secret
+*.log
+.DS_Store

@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: perfume-decant-shop
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: SESSION_SECRET
+        generateValue: true
+# NOTE: free plan has an ephemeral filesystem — the SQLite database resets
+# on redeploy/restart. Attach a paid disk (mount /var/data, DB_PATH=/var/data/perfume.db)
+# if persistent data is needed.

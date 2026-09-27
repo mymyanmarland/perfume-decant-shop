@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "express": "^4.21.2",
+    "multer": "^2.0.1",
+    "cookie-parser": "^1.4.6"
+  },
+  "description": "Perfume Online Decants Shop — bilingual e-commerce for authentic perfume decants in Myanmar (Express + SQLite + vanilla JS)",
+  "engines": {
+    "node": ">=22.5"
+  },
+  "main": "server.js",
+  "name": "perfume-decant-shop",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "version": "1.0.0"
+}

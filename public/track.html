@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Track Order — Perfume Decant Shop</title>
+<link rel="stylesheet" href="/css/fonts.css">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/shopper.css">
+</head>
+<body>
+<div id="siteHeader"></div>
+<main class="lx-wrap lx-narrow">
+  <h1 class="lx-title lx-center" data-i18n="track.title">Track your order</h1>
+  <p class="lx-subtitle lx-center" data-i18n="track.hint">Enter your order number and the phone number used at checkout.</p>
+  <div class="lx-card">
+    <form id="track-form" novalidate>
+      <div class="lx-field">
+        <label for="track-number" data-i18n="track.number">Order number</label>
+        <input class="lx-input" id="track-number" placeholder="PDS-20260928-0001" autocomplete="off">
+        <div class="lx-err" data-err-for="number"></div>
+      </div>
+      <div class="lx-field">
+        <label for="track-phone" data-i18n="track.phone">Phone number</label>
+        <input class="lx-input" id="track-phone" inputmode="tel" placeholder="09XXXXXXXXX" autocomplete="tel">
+        <div class="lx-err" data-err-for="phone"></div>
+      </div>
+      <button class="lx-btn" type="submit" data-i18n="track.submit">Track order</button>
+    </form>
+  </div>
+  <div id="track-result" class="lx-mt"></div>
+</main>
+<div id="siteFooter"></div>
+<script src="/js/i18n.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/shopper.js"></script>
+<script src="/js/shopper-i18n.js"></script>
+<script src="/js/track.js"></script>
+</body>
+</html>

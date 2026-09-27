@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-i18n="product.page_title">Perfume Details</title>
+<link rel="stylesheet" href="/css/fonts.css">
+<link rel="stylesheet" href="/css/style.css">
+<style>
+:root{
+  --cream:#FBF7F0; --ink:#3E2B21; --ink-soft:#6B584C;
+  --peach:#F6D9C3; --lilac:#E6DBF7; --sky:#D6E5F6; --rose:#F6D3DC;
+  --card:rgba(255,255,255,.62); --line:rgba(62,43,33,.12); --gold:#B98A2F;
+}
+*{box-sizing:border-box}
+body{background:var(--cream);color:var(--ink);font-family:'Inter','Noto Sans Myanmar',system-ui,sans-serif;margin:0}
+h1,h2,h3,.serif{font-family:'Playfair Display','Noto Sans Myanmar',Georgia,serif}
+.pd-wrap{max-width:1180px;margin:0 auto;padding:0 16px 64px}
+.crumbs{font-size:.85rem;color:var(--ink-soft);padding:18px 2px}
+.crumbs a{color:var(--ink-soft);text-decoration:none}.crumbs a:hover{color:var(--gold)}
+.pd-layout{display:grid;grid-template-columns:minmax(0,460px) 1fr;gap:34px;align-items:start}
+.pd-gallery{position:sticky;top:14px}
+.pd-art-main{border-radius:24px;overflow:hidden;aspect-ratio:1/1;
+  background:linear-gradient(135deg,var(--lilac),var(--sky));
+  box-shadow:0 18px 50px rgba(62,43,33,.14);border:1px solid var(--line);position:relative}
+.pd-art-main img,.pd-art-main>div{width:100%;height:100%;object-fit:cover;display:block}
+.pd-badges{position:absolute;top:14px;left:14px;display:flex;gap:8px}
+.badge{font-size:.68rem;font-weight:700;letter-spacing:.08em;padding:5px 12px;border-radius:999px;color:var(--ink)}
+.badge.new{background:linear-gradient(135deg,var(--sky),var(--lilac))}
+.badge.best{background:linear-gradient(135deg,var(--peach),var(--rose))}
+.pd-thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.pd-thumb{border-radius:14px;overflow:hidden;aspect-ratio:1/1;cursor:pointer;border:2px solid transparent;
+  background:linear-gradient(135deg,var(--lilac),var(--sky));padding:0}
+.pd-thumb img,.pd-thumb>div{width:100%;height:100%;object-fit:cover;display:block}
+.pd-thumb.active{border-color:var(--gold)}
+.pd-info .brand{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);font-weight:700}
+.pd-info h1{font-size:clamp(1.7rem,4vw,2.6rem);margin:6px 0 8px;line-height:1.15}
+.pd-meta{color:var(--ink-soft);font-size:.92rem;display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:10px}
+.pd-stars{color:var(--gold);font-size:1rem;margin-bottom:12px}
+.pd-stars a{color:var(--ink-soft);font-size:.85rem;text-decoration:none;margin-left:8px}
+.pd-price{font-size:1.9rem;font-weight:700;margin:6px 0 2px}
+.pd-price .compare{font-size:1.05rem;color:var(--ink-soft);text-decoration:line-through;font-weight:400;margin-left:10px}
+.pd-stockline{font-size:.88rem;font-weight:600;margin-bottom:14px}
+.pd-stockline.ok{color:#2e7d4f}.pd-stockline.low{color:#b0761a}.pd-stockline.out{color:#b0433a}
+.v-label{font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin:16px 0 8px}
+.v-pills{display:flex;flex-wrap:wrap;gap:10px}
+.v-pill{border:1.5px solid var(--line);background:var(--card);backdrop-filter:blur(10px);
+  border-radius:14px;padding:10px 14px;cursor:pointer;font-family:inherit;text-align:left;transition:.18s;min-width:104px}
+.v-pill .sz{font-weight:700;font-size:.95rem;display:block}
+.v-pill .pr{font-size:.82rem;color:var(--ink-soft);display:block;margin-top:2px}
+.v-pill .st{font-size:.72rem;font-weight:700;display:block;margin-top:3px}
+.v-pill .st.ok{color:#2e7d4f}.v-pill .st.low{color:#b0761a}.v-pill .st.out{color:#b0433a}
+.v-pill.active{border-color:var(--gold);box-shadow:0 6px 18px rgba(185,138,47,.25);background:#fff}
+.v-pill:disabled{opacity:.55;cursor:not-allowed}
+.buy-row{display:flex;gap:12px;margin:20px 0 8px;flex-wrap:wrap}
+.qty{display:flex;align-items:center;border:1px solid var(--line);border-radius:999px;background:var(--card);overflow:hidden}
+.qty button{width:42px;height:48px;border:0;background:none;font-size:1.3rem;cursor:pointer;color:var(--ink)}
+.qty input{width:46px;text-align:center;border:0;background:none;font-size:1rem;font-weight:700;color:var(--ink);outline:none;font-family:inherit}
+.btn-cart{flex:1 1 200px;border:0;border-radius:999px;padding:0 28px;min-height:48px;cursor:pointer;
+  font-family:inherit;font-weight:700;font-size:1rem;color:#fff;
+  background:linear-gradient(135deg,#5a4030,#3E2B21);box-shadow:0 10px 26px rgba(62,43,33,.3);transition:.2s}
+.btn-cart:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 14px 32px rgba(62,43,33,.36)}
+.btn-cart:disabled{opacity:.5;cursor:not-allowed}
+.btn-fav{border:1.5px solid var(--line);background:var(--card);border-radius:999px;min-height:48px;padding:0 20px;
+  cursor:pointer;font-size:1.2rem;color:#b08d7a;transition:.2s}
+.btn-fav.on{color:#d33a5c;border-color:#d33a5c}
+.assure{display:grid;gap:10px;margin-top:18px}
+.assure-card{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);
+  border-radius:16px;padding:13px 15px;backdrop-filter:blur(12px);font-size:.88rem}
+.assure-card .ic{font-size:1.3rem;flex:none}
+.assure-card b{display:block;margin-bottom:2px}
+.assure-card p{margin:0;color:var(--ink-soft)}
+.pd-section{margin-top:44px;background:var(--card);border:1px solid var(--line);border-radius:22px;
+  padding:26px;backdrop-filter:blur(14px);box-shadow:0 8px 30px rgba(62,43,33,.06)}
+.pd-section h2{margin:0 0 16px;font-size:1.5rem}
+.pyramid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.note-col{background:rgba(255,255,255,.55);border:1px solid var(--line);border-radius:16px;padding:16px}
+.note-col h3{margin:0 0 10px;font-size:.95rem;display:flex;align-items:center;gap:8px}
+.note-col ul{margin:0;padding-left:18px;font-size:.9rem;color:var(--ink-soft);display:grid;gap:5px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:linear-gradient(135deg,var(--peach),var(--lilac));border-radius:999px;
+  padding:7px 15px;font-size:.83rem;font-weight:600}
+.meters{display:grid;gap:14px;max-width:420px}
+.meter-row{display:grid;grid-template-columns:110px 1fr 34px;align-items:center;gap:10px;font-size:.9rem}
+.meter{display:flex;gap:6px}
+.seg{height:9px;flex:1;border-radius:999px;background:#e9e0d3}
+.seg.fill{background:linear-gradient(90deg,var(--gold),#d9a83f)}
+.desc-text{line-height:1.75;font-size:.98rem;color:#4a3a2f;white-space:pre-line}
+/* reviews */
+.rev{border-top:1px solid var(--line);padding:16px 2px}
+.rev-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.rev-name{font-weight:700;font-size:.92rem}
+.rev-verified{font-size:.72rem;background:#e7f2e9;color:#2e7d4f;border-radius:999px;padding:3px 10px;font-weight:700;margin-left:8px}
+.rev-stars{color:var(--gold)}
+.rev-date{font-size:.78rem;color:var(--ink-soft)}
+.rev-title{font-weight:600;margin:8px 0 4px}
+.rev-body{font-size:.92rem;color:#4a3a2f;line-height:1.6;margin:0}
+.rev-form{display:grid;gap:12px;margin-top:18px;background:rgba(255,255,255,.5);
+  border:1px solid var(--line);border-radius:16px;padding:18px}
+.rev-form label{font-size:.85rem;font-weight:600;display:grid;gap:6px}
+.rev-form input,.rev-form textarea,.rev-form select{border:1px solid var(--line);border-radius:10px;
+  padding:10px 12px;font-family:inherit;font-size:.92rem;background:#fff;color:var(--ink);outline:none;width:100%}
+.rev-form input:focus,.rev-form textarea:focus,.rev-form select:focus{border-color:var(--gold)}
+.star-input{display:flex;gap:4px;font-size:1.7rem;cursor:pointer}
+.star-input span{color:#d8cfc4}.star-input span.on{color:var(--gold)}
+.btn-submit{border:0;border-radius:999px;padding:13px;cursor:pointer;font-family:inherit;font-weight:700;
+  color:#fff;background:linear-gradient(135deg,#5a4030,#3E2B21);font-size:.95rem}
+.btn-submit:disabled{opacity:.55;cursor:default}
+/* related */
+.rel-track{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(150px,190px);gap:14px;
+  overflow-x:auto;padding:4px 2px 14px;scroll-snap-type:x mandatory}
+.rel-track .p-card{scroll-snap-align:start}
+.rel-card{display:flex;flex-direction:column;text-decoration:none;color:inherit}
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#3E2B21;color:#FBF7F0;
+  padding:12px 22px;border-radius:999px;font-size:.9rem;opacity:0;pointer-events:none;transition:.3s;z-index:999;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.skel{border-radius:22px;background:linear-gradient(100deg,#efe7da 40%,#fbf7f0 50%,#efe7da 60%);
+  background-size:200% 100%;animation:sh 1.2s infinite;min-height:380px}
+@keyframes sh{to{background-position:-200% 0}}
+@media (max-width:900px){
+  .pd-layout{grid-template-columns:1fr}
+  .pd-gallery{position:static}
+  .pyramid{grid-template-columns:1fr}
+  .pd-section{padding:20px 16px}
+}
+</style>
+</head>
+<body>
+<header id="site-header"></header>
+
+<main class="pd-wrap" id="pdMain">
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="/shop.html" data-i18n="nav.shop">Shop</a> <span aria-hidden="true">/</span> <span id="crumbName">…</span>
+  </nav>
+
+  <div id="pdSkeleton"><div class="skel"></div></div>
+
+  <div id="pdContent" hidden>
+    <div class="pd-layout">
+      <div class="pd-gallery">
+        <div class="pd-art-main" id="artMain">
+          <div class="pd-badges" id="pdBadges"></div>
+        </div>
+        <div class="pd-thumbs" id="pdThumbs"></div>
+      </div>
+
+      <div class="pd-info">
+        <div class="brand" id="pdBrand"></div>
+        <h1 id="pdName"></h1>
+        <div class="pd-meta" id="pdMeta"></div>
+        <div class="pd-stars" id="pdStars"></div>
+        <div class="pd-price" id="pdPrice"></div>
+        <div class="pd-stockline" id="pdStockLine"></div>
+
+        <div class="v-label" data-i18n="product.size_label">Decant Size</div>
+        <div class="v-pills" id="vPills"></div>
+
+        <div class="buy-row">
+          <div class="qty" aria-label="Quantity">
+            <button id="qMinus" type="button" aria-label="−">−</button>
+            <input id="qVal" value="1" inputmode="numeric" aria-label="Quantity">
+            <button id="qPlus" type="button" aria-label="+">+</button>
+          </div>
+          <button class="btn-cart" id="addCart" data-i18n="product.add_to_cart">Add to Cart</button>
+          <button class="btn-fav" id="favBtn" aria-label="favorite">♡</button>
+        </div>
+
+        <div class="assure">
+          <div class="assure-card">
+            <span class="ic">✓</span>
+            <div><b data-i18n="product.authenticity">100% Authentic Guarantee</b><p id="authText"></p></div>
+          </div>
+          <div class="assure-card">
+            <span class="ic">🚚</span>
+            <div><b data-i18n="product.delivery_title">Delivery</b><p data-i18n="product.delivery_text">Fast, tracked delivery across Myanmar. Decants are poured fresh from sealed retail bottles.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="pd-section" aria-label="Details">
+      <h2 data-i18n="product.details">Details</h2>
+      <p class="desc-text" id="pdDesc"></p>
+      <div class="v-label" data-i18n="product.notes">Fragrance Notes</div>
+      <div class="pyramid" id="pyramid"></div>
+      <div class="v-label" data-i18n="product.accords">Accords</div>
+      <div class="chips" id="accords"></div>
+      <div class="v-label" data-i18n="product.performance">Performance</div>
+      <div class="meters" id="meters"></div>
+      <div class="v-label" data-i18n="product.seasons">Best Seasons</div>
+      <div class="chips" id="seasons"></div>
+      <div class="v-label" data-i18n="product.occasions">Occasions</div>
+      <div class="chips" id="occasions"></div>
+    </section>
+
+    <section class="pd-section" id="reviewsSection" aria-label="Reviews">
+      <h2><span data-i18n="product.reviews">Reviews</span> <span id="revCount" style="font-size:1rem;color:var(--ink-soft)"></span></h2>
+      <div id="revList"></div>
+      <div class="loadmore-wrap" style="text-align:center;margin-top:14px">
+        <button class="btn-submit" id="revMore" hidden style="padding:10px 34px" data-i18n="shop.load_more">Load more</button>
+      </div>
+      <div id="revFormWrap"></div>
+    </section>
+
+    <section class="pd-section" id="relSection" hidden aria-label="Related">
+      <h2 data-i18n="product.related">You May Also Like</h2>
+      <div class="rel-track" id="relTrack"></div>
+    </section>
+  </div>
+
+  <div id="pdError" hidden style="text-align:center;padding:80px 16px">
+    <h2 data-i18n="product.not_found">Fragrance not found.</h2>
+    <p><a href="/shop.html" data-i18n="product.back_shop" style="color:var(--gold)">Back to shop</a></p>
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+<div id="toast" role="status"></div>
+
+<script src="/js/i18n.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/product.js"></script>
+</body>
+</html>

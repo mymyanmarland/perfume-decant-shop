@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-i18n="shop.page_title">Shop Fragrances — Perfume Decants</title>
+<meta name="description" content="Browse authentic perfume decants.">
+<link rel="stylesheet" href="/css/fonts.css">
+<link rel="stylesheet" href="/css/style.css">
+<style>
+:root{
+  --cream:#FBF7F0; --ink:#3E2B21; --ink-soft:#6B584C;
+  --peach:#F6D9C3; --lilac:#E6DBF7; --sky:#D6E5F6; --rose:#F6D3DC;
+  --card:rgba(255,255,255,.62); --line:rgba(62,43,33,.12);
+  --gold:#B98A2F;
+}
+*{box-sizing:border-box}
+body{background:var(--cream);color:var(--ink);
+  font-family:'Inter','Noto Sans Myanmar',system-ui,-apple-system,sans-serif;margin:0}
+h1,h2,h3,.serif{font-family:'Playfair Display','Noto Sans Myanmar',Georgia,serif}
+.shop-wrap{max-width:1280px;margin:0 auto;padding:0 16px 64px}
+.shop-hero{text-align:center;padding:44px 12px 8px}
+.shop-hero h1{font-size:clamp(2rem,5vw,3.2rem);margin:0 0 8px;letter-spacing:.02em}
+.shop-hero p{color:var(--ink-soft);margin:0;font-size:1.02rem}
+/* toolbar */
+.shop-toolbar{display:flex;gap:10px;align-items:center;margin:22px 0 18px;flex-wrap:wrap}
+.search-box{flex:1 1 220px;display:flex;align-items:center;background:var(--card);
+  border:1px solid var(--line);border-radius:999px;padding:0 6px 0 16px;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 4px 18px rgba(62,43,33,.06)}
+.search-box input{flex:1;border:0;background:transparent;outline:none;padding:12px 4px;
+  font-size:.95rem;color:var(--ink);font-family:inherit;min-width:0}
+.search-box button{border:0;background:linear-gradient(135deg,var(--peach),var(--rose));
+  border-radius:999px;padding:9px 18px;font-weight:600;color:var(--ink);cursor:pointer;font-family:inherit}
+.sort-wrap{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);
+  border-radius:999px;padding:6px 14px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.sort-wrap select{border:0;background:transparent;font-family:inherit;font-size:.9rem;color:var(--ink);
+  outline:none;cursor:pointer;padding:6px 2px}
+.btn-glass{background:var(--card);border:1px solid var(--line);border-radius:999px;
+  padding:10px 18px;font-family:inherit;font-weight:600;color:var(--ink);cursor:pointer;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:none}
+/* layout */
+.shop-layout{display:grid;grid-template-columns:250px 1fr;gap:22px;align-items:start}
+.filters{background:var(--card);border:1px solid var(--line);border-radius:20px;
+  padding:18px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  box-shadow:0 8px 30px rgba(62,43,33,.07);position:sticky;top:14px;max-height:calc(100vh - 28px);overflow:auto}
+.filters-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.filters-head h2{font-size:1.15rem;margin:0}
+.link-btn{border:0;background:none;color:var(--gold);cursor:pointer;font-size:.85rem;font-weight:600;font-family:inherit}
+.f-group{border-top:1px solid var(--line);padding:12px 2px}
+.f-group>h3{font-size:.82rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);
+  margin:0 0 10px;font-family:'Inter','Noto Sans Myanmar',sans-serif;font-weight:700}
+.f-check{display:flex;align-items:center;gap:9px;padding:5px 0;font-size:.92rem;cursor:pointer}
+.f-check input{accent-color:var(--gold);width:16px;height:16px}
+.f-row{display:flex;gap:8px;align-items:center}
+.f-row input[type=number]{width:100%;border:1px solid var(--line);border-radius:10px;padding:8px 10px;
+  font-family:inherit;font-size:.9rem;background:rgba(255,255,255,.7);color:var(--ink);outline:none}
+.f-row input:focus{border-color:var(--gold)}
+.f-select{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 10px;font-family:inherit;
+  font-size:.9rem;background:rgba(255,255,255,.7);color:var(--ink);outline:none;cursor:pointer}
+.btn-apply{width:100%;margin-top:8px;border:0;border-radius:12px;padding:10px;cursor:pointer;font-weight:700;
+  font-family:inherit;color:var(--ink);background:linear-gradient(135deg,var(--peach),var(--lilac))}
+.toggle-row{display:flex;justify-content:space-between;align-items:center;font-size:.92rem;padding:4px 0}
+.switch{position:relative;width:44px;height:24px;flex:none}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;background:#d8cfc4;border-radius:999px;transition:.2s;cursor:pointer}
+.slider:before{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.switch input:checked + .slider{background:var(--gold)}
+.switch input:checked + .slider:before{transform:translateX(20px)}
+/* grid */
+.result-line{color:var(--ink-soft);font-size:.9rem;margin:2px 2px 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:16px}
+.p-card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  box-shadow:0 6px 22px rgba(62,43,33,.06);transition:transform .25s ease,box-shadow .25s ease;display:flex;flex-direction:column}
+.p-card:hover{transform:translateY(-6px);box-shadow:0 16px 38px rgba(62,43,33,.13)}
+.p-art{position:relative;aspect-ratio:1/1;overflow:hidden;background:linear-gradient(135deg,var(--lilac),var(--sky))}
+.p-art img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease}
+.p-card:hover .p-art img{transform:scale(1.06)}
+.p-badges{position:absolute;top:10px;left:10px;display:flex;gap:6px;z-index:2}
+.badge{font-size:.62rem;font-weight:700;letter-spacing:.08em;padding:4px 9px;border-radius:999px;color:var(--ink)}
+.badge.new{background:linear-gradient(135deg,var(--sky),var(--lilac))}
+.badge.best{background:linear-gradient(135deg,var(--peach),var(--rose))}
+.fav-btn{position:absolute;top:8px;right:8px;z-index:2;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);
+  background:rgba(255,255,255,.75);backdrop-filter:blur(8px);cursor:pointer;font-size:1.05rem;line-height:1;
+  display:flex;align-items:center;justify-content:center;color:#b08d7a;transition:.2s}
+.fav-btn.on{color:#d33a5c;border-color:#d33a5c}
+.p-body{padding:12px 13px 14px;display:flex;flex-direction:column;gap:5px;flex:1}
+.p-brand{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+.p-name{font-family:'Playfair Display','Noto Sans Myanmar',serif;font-size:1.02rem;margin:0;line-height:1.3}
+.p-name a{color:inherit;text-decoration:none}
+.p-name a:hover{color:var(--gold)}
+.p-stars{color:var(--gold);font-size:.82rem;letter-spacing:.05em}
+.p-stars .cnt{color:var(--ink-soft);font-size:.75rem}
+.p-price{font-weight:700;font-size:.98rem;margin-top:auto;padding-top:4px}
+.p-stock{font-size:.75rem;font-weight:600}
+.p-stock.ok{color:#2e7d4f}.p-stock.low{color:#b0761a}.p-stock.out{color:#b0433a}
+.empty{text-align:center;padding:60px 16px;color:var(--ink-soft)}
+.empty h2{color:var(--ink)}
+.loadmore-wrap{text-align:center;margin:30px 0 10px}
+.btn-load{border:1px solid var(--line);background:var(--card);backdrop-filter:blur(12px);
+  border-radius:999px;padding:13px 42px;font-family:inherit;font-weight:700;font-size:.95rem;
+  color:var(--ink);cursor:pointer;box-shadow:0 6px 20px rgba(62,43,33,.08);transition:.2s}
+.btn-load:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(62,43,33,.14)}
+.btn-load[disabled]{opacity:.55;cursor:default;transform:none}
+.skel{border-radius:18px;background:linear-gradient(100deg,#efe7da 40%,#fbf7f0 50%,#efe7da 60%);
+  background-size:200% 100%;animation:sh 1.2s infinite;min-height:300px}
+@keyframes sh{to{background-position:-200% 0}}
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#3E2B21;color:#FBF7F0;
+  padding:12px 22px;border-radius:999px;font-size:.9rem;opacity:0;pointer-events:none;transition:.3s;z-index:999;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media (max-width:900px){
+  .shop-layout{grid-template-columns:1fr}
+  .btn-glass{display:inline-flex;align-items:center;gap:6px}
+  .filters{display:none;position:fixed;inset:auto 0 0 0;top:64px;z-index:60;border-radius:22px 22px 0 0;max-height:82vh}
+  .filters.open{display:block}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+}
+</style>
+</head>
+<body>
+<header id="site-header"></header>
+
+<main class="shop-wrap">
+  <div class="shop-hero">
+    <h1 data-i18n="shop.title">Shop All Fragrances</h1>
+    <p data-i18n="shop.subtitle">Authentic designer &amp; niche decants, poured fresh for you.</p>
+  </div>
+
+  <div class="shop-toolbar">
+    <button class="btn-glass" id="filterToggle" aria-expanded="false">⚙ <span data-i18n="shop.filters">Filters</span></button>
+    <div class="search-box">
+      <input id="q" type="search" autocomplete="off">
+      <button id="searchBtn" type="button" data-i18n="shop.search">Search</button>
+    </div>
+    <label class="sort-wrap">
+      <span data-i18n="shop.sort_by" style="font-size:.82rem;color:var(--ink-soft)">Sort</span>
+      <select id="sort" aria-label="Sort">
+        <option value="new" data-i18n="shop.sort.new">Newest</option>
+        <option value="popular" data-i18n="shop.sort.popular">Most Popular</option>
+        <option value="bestselling" data-i18n="shop.sort.bestselling">Best Selling</option>
+        <option value="rating" data-i18n="shop.sort.rating">Top Rated</option>
+        <option value="price_asc" data-i18n="shop.sort.price_asc">Price: Low to High</option>
+        <option value="price_desc" data-i18n="shop.sort.price_desc">Price: High to Low</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="shop-layout">
+    <aside class="filters" id="filterPanel" aria-label="Filters">
+      <div class="filters-head">
+        <h2 data-i18n="shop.filters">Filters</h2>
+        <button class="link-btn" id="clearFilters" type="button" data-i18n="shop.clear">Clear all</button>
+      </div>
+
+      <div class="f-group">
+        <div class="toggle-row">
+          <span data-i18n="shop.in_stock_only">In stock only</span>
+          <label class="switch"><input type="checkbox" id="fAvailable"><span class="slider"></span></label>
+        </div>
+      </div>
+
+      <div class="f-group">
+        <h3 data-i18n="shop.brand">Brand</h3>
+        <div id="fBrands"><div class="skel" style="min-height:80px"></div></div>
+      </div>
+
+      <div class="f-group">
+        <h3 data-i18n="shop.price">Price (MMK)</h3>
+        <div class="f-row">
+          <input type="number" id="fMinPrice" min="0" inputmode="numeric">
+          <span>–</span>
+          <input type="number" id="fMaxPrice" min="0" inputmode="numeric">
+        </div>
+        <button class="btn-apply" id="applyPrice" type="button" data-i18n="shop.apply">Apply</button>
+      </div>
+
+      <div class="f-group">
+        <h3 data-i18n="shop.size">Decant Size</h3>
+        <select class="f-select" id="fSize">
+          <option value="" data-i18n="shop.all">All</option>
+          <option value="2">2 ml</option>
+          <option value="3">3 ml</option>
+          <option value="5">5 ml</option>
+          <option value="10">10 ml</option>
+        </select>
+      </div>
+
+      <div class="f-group"><h3 data-i18n="shop.family">Fragrance Family</h3><select class="f-select" id="fFamily"><option value="" data-i18n="shop.all">All</option></select></div>
+      <div class="f-group"><h3 data-i18n="shop.concentration">Concentration</h3><select class="f-select" id="fConcentration"><option value="" data-i18n="shop.all">All</option></select></div>
+      <div class="f-group"><h3 data-i18n="shop.gender">Gender</h3><select class="f-select" id="fGender"><option value="" data-i18n="shop.all">All</option></select></div>
+      <div class="f-group"><h3 data-i18n="shop.season">Season</h3><select class="f-select" id="fSeason"><option value="" data-i18n="shop.all">All</option></select></div>
+      <div class="f-group"><h3 data-i18n="shop.occasion">Occasion</h3><select class="f-select" id="fOccasion"><option value="" data-i18n="shop.all">All</option></select></div>
+
+      <div class="f-group">
+        <h3 data-i18n="shop.min_longevity">Min. Longevity</h3>
+        <select class="f-select" id="fMinLongevity">
+          <option value="" data-i18n="shop.any">Any</option>
+          <option value="2">2+ / 5</option><option value="3">3+ / 5</option>
+          <option value="4">4+ / 5</option><option value="5">5 / 5</option>
+        </select>
+      </div>
+      <div class="f-group">
+        <h3 data-i18n="shop.min_sillage">Min. Sillage</h3>
+        <select class="f-select" id="fMinSillage">
+          <option value="" data-i18n="shop.any">Any</option>
+          <option value="2">2+ / 5</option><option value="3">3+ / 5</option>
+          <option value="4">4+ / 5</option><option value="5">5 / 5</option>
+        </select>
+      </div>
+    </aside>
+
+    <section aria-live="polite">
+      <div class="result-line" id="resultCount"></div>
+      <div class="grid" id="grid"></div>
+      <div class="empty" id="emptyState" hidden>
+        <h2 data-i18n="shop.no_results">No fragrances match your filters.</h2>
+        <p data-i18n="shop.try_clear">Try clearing some filters or searching something else.</p>
+      </div>
+      <div class="loadmore-wrap">
+        <button class="btn-load" id="loadMore" hidden data-i18n="shop.load_more">Load more</button>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+<div id="toast" role="status"></div>
+
+<script src="/js/i18n.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/shop.js"></script>
+</body>
+</html>

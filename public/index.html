@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maison Décant — Authentic Perfume Decants</title>
+  <meta name="description" content="100% authentic perfume decants, decanted to order and delivered across Myanmar.">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div id="siteHeader"></div>
+
+  <main>
+    <!-- Hero carousel (banners from /api/banners) -->
+    <section class="hero" aria-label="Promotions">
+      <div class="container">
+        <div class="carousel" id="bannerCarousel">
+          <div class="carousel-track" id="carouselTrack"><!-- slides injected --></div>
+          <button class="carousel-arrow prev" id="carPrev" aria-label="Previous">‹</button>
+          <button class="carousel-arrow next" id="carNext" aria-label="Next">›</button>
+          <div class="carousel-dots" id="carouselDots"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured -->
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="kicker" data-i18n="home.hero_kicker">100% Authentic · Decanted to Order</span>
+            <h2 data-i18n="home.featured">Featured</h2>
+          </div>
+          <a class="link-more" href="/shop.html"><span data-i18n="home.view_all">View All</span> →</a>
+        </div>
+        <div class="product-grid" id="featuredGrid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- Brands -->
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <div class="section-head">
+          <h2 data-i18n="home.brands_title">Shop by Brand</h2>
+        </div>
+        <div class="brand-strip" id="brandStrip" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- New arrivals -->
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <div class="section-head">
+          <h2 data-i18n="home.new_arrivals">New Arrivals</h2>
+          <a class="link-more" href="/shop.html?sort=new"><span data-i18n="home.view_all">View All</span> →</a>
+        </div>
+        <div class="product-grid" id="newGrid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- Best sellers -->
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <div class="section-head">
+          <h2 data-i18n="home.best_sellers">Best Sellers</h2>
+          <a class="link-more" href="/shop.html?sort=bestselling"><span data-i18n="home.view_all">View All</span> →</a>
+        </div>
+        <div class="product-grid" id="bestGrid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- Authenticity promise -->
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <div class="text-center" style="margin-bottom:1.8rem">
+          <h2 data-i18n="home.promise_title">The Authenticity Promise</h2>
+        </div>
+        <div class="promise-grid">
+          <div class="promise-card">
+            <div class="promise-icon" aria-hidden="true">💎</div>
+            <h3 data-i18n="home.promise_1t">100% Authentic</h3>
+            <p data-i18n="home.promise_1d"></p>
+          </div>
+          <div class="promise-card">
+            <div class="promise-icon" aria-hidden="true">🧪</div>
+            <h3 data-i18n="home.promise_2t">Freshly Decanted</h3>
+            <p data-i18n="home.promise_2d"></p>
+          </div>
+          <div class="promise-card">
+            <div class="promise-icon" aria-hidden="true">🛵</div>
+            <h3 data-i18n="home.promise_3t">Pay on Delivery</h3>
+            <p data-i18n="home.promise_3d"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="siteFooter"></div>
+
+  <script src="/js/i18n.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/home.js"></script>
+</body>
+</html>
