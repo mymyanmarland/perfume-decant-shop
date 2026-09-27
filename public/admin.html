@@ -128,6 +128,20 @@ label.f input,label.f select,label.f textarea{margin-top:4px;width:100%}
   .grid2{grid-template-columns:1fr}
   .kv{grid-template-columns:110px 1fr}
 }
+@media (max-width:560px){
+  /* iOS Safari auto-zooms on focus when inputs are < 16px */
+  input[type=text],input[type=number],input[type=email],input[type=password],input[type=date],input[type=datetime-local],
+  select,textarea{font-size:16px}
+  .topbar{flex-wrap:wrap;padding:10px 12px;gap:8px}
+  .main{padding:10px}
+  .modal{padding:16px}
+  .overlay{padding:16px 8px}
+  .kv{grid-template-columns:1fr;gap:2px}
+  .kv dd{margin-bottom:6px}
+  .toolbar{gap:8px}
+  .pagehead h1{font-size:19px}
+  .cards{grid-template-columns:repeat(2,1fr);gap:10px}
+}
 </style>
 </head>
 <body>

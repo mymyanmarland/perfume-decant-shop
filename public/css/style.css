@@ -33,7 +33,10 @@
 
 /* ---------- 2. Reset & base ---------- */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;overflow-x:clip}
+@supports not (overflow:clip){html{overflow-x:hidden}}
+body{overflow-x:clip}
+@supports not (overflow:clip){body{overflow-x:hidden}}
 body{
   font-family:var(--font-body);
   background:var(--bg);
@@ -147,6 +150,8 @@ p{margin:.5em 0}
   font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;
 }
 .hamburger{display:none}
+/* mobile-only auth links inside the nav drawer (shown ≤560px when header buttons hide) */
+.nav-auth{display:none}
 .account-chip{
   display:flex;align-items:center;gap:.5rem;padding:.45rem .9rem .45rem .5rem;
   border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.55);cursor:pointer;font-weight:600;font-size:.88rem;
@@ -555,9 +560,16 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .card-body{padding:.7rem .8rem .9rem}
   .card-name{font-size:.92rem}
   .price{font-size:.9rem}
+  .card-foot{flex-wrap:wrap;row-gap:.25rem}
+  .section-head{flex-wrap:wrap}
   .header-inner{gap:.5rem}
   .logo-name{display:none}
-  .lang-switch button{padding:.42rem .6rem}
+  .lang-switch button{padding:.4rem .5rem;font-size:.75rem}
+  /* header auth buttons move into the nav drawer on small screens */
+  .header-actions .btn{display:none}
+  .nav-auth{display:block}
+  .account-chip{padding:.45rem}
+  .account-chip span:last-child{display:none}
   .footer-grid{grid-template-columns:1fr;gap:1.4rem;padding:2rem 0 1.4rem}
   .auth-card{padding:1.8rem 1.3rem;margin:1.5rem auto}
   .cart-item{grid-template-columns:64px 1fr;grid-template-areas:"thumb info" "thumb actions"}
@@ -565,6 +577,18 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .cart-item .info{grid-area:info}
   .cart-item .actions{grid-area:actions;display:flex;align-items:center;gap:.8rem}
   .admin-main{padding:1.1rem}
+  .admin-panel{padding:1rem}
+  .modal{padding:1.25rem}
+  .carousel-arrow{width:36px;height:36px;font-size:1rem}
+  .carousel-arrow.prev{left:.5rem}
+  .carousel-arrow.next{right:.5rem}
+  .review-head{flex-wrap:wrap;gap:.3rem}
+  /* iOS Safari auto-zooms on focus when inputs are < 16px — keep at 16px */
+  input[type=text],input[type=email],input[type=password],input[type=tel],
+  input[type=number],input[type=date],select,textarea{font-size:16px}
+  /* larger touch targets */
+  .qty-step button{width:38px;height:38px}
+  .icon-btn{width:44px;height:44px}
 }
 
 /* ---------- 25. Reduced motion ---------- */

@@ -281,3 +281,24 @@ body {
 .lx-center { text-align: center; }
 .lx-mt { margin-top: 14px; }
 .lx-div { border: none; border-top: 1px solid var(--lx-line); margin: 16px 0; }
+
+/* ---------- mobile hardening (≤560px) ---------- */
+@media (max-width: 560px) {
+  /* iOS Safari auto-zooms on focus when inputs are < 16px */
+  .lx-input, .lx-select, .lx-textarea { font-size: 16px; }
+  .lx-wrap { padding: 16px 12px 64px; }
+  .lx-card { padding: 14px; }
+  .lx-title { font-size: 1.6rem; }
+  /* stack key/value rows instead of squeezing */
+  .lx-kv { grid-template-columns: 1fr; gap: 2px; }
+  .lx-kv dd { margin-bottom: 8px; }
+  .lx-addr { flex-wrap: wrap; }
+  .lx-line-name { overflow-wrap: anywhere; }
+  .lx-line { gap: 10px; }
+  /* larger touch targets */
+  .lx-stepper button { width: 40px; height: 40px; }
+  .lx-stepper input { width: 44px; }
+  .lx-tab { padding: 9px 16px; }
+  .lx-order-row { gap: 10px; }
+  .lx-pay { padding: 12px; }
+}

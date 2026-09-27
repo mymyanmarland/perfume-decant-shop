@@ -123,10 +123,21 @@ h1,h2,h3,.serif{font-family:'Playfair Display','Noto Sans Myanmar',Georgia,serif
   .pyramid{grid-template-columns:1fr}
   .pd-section{padding:20px 16px}
 }
+@media (max-width:560px){
+  /* iOS Safari auto-zooms on focus when inputs are < 16px */
+  .rev-form input,.rev-form textarea,.rev-form select{font-size:16px}
+  .pd-section{padding:18px 14px;margin-top:32px}
+  .pd-section h2{font-size:1.3rem}
+  .pd-price{font-size:1.6rem}
+  .meter-row{grid-template-columns:96px 1fr 30px;gap:8px}
+  .buy-row{gap:10px}
+  .btn-cart{flex:1 1 100%}
+  .crumbs{padding:14px 2px}
+}
 </style>
 </head>
 <body>
-<header id="site-header"></header>
+<div id="siteHeader"></div>
 
 <main class="pd-wrap" id="pdMain">
   <nav class="crumbs" aria-label="Breadcrumb">
@@ -214,7 +225,7 @@ h1,h2,h3,.serif{font-family:'Playfair Display','Noto Sans Myanmar',Georgia,serif
   </div>
 </main>
 
-<footer id="site-footer"></footer>
+<div id="siteFooter"></div>
 <div id="toast" role="status"></div>
 
 <script src="/js/i18n.js"></script>

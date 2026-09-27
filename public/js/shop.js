@@ -440,12 +440,26 @@
       if (btn) { e.preventDefault(); toggleFav(btn); }
     });
     var ft = $('filterToggle');
-    ft.addEventListener('click', function () {
-      var panel = $('filterPanel');
-      var open = panel.classList.toggle('open');
+    var panel = $('filterPanel');
+    var setFilters = function (open) {
+      panel.classList.toggle('open', open);
       ft.setAttribute('aria-expanded', open ? 'true' : 'false');
+      document.body.style.overflow = open ? 'hidden' : '';
+    };
+    ft.addEventListener('click', function () {
+      setFilters(!panel.classList.contains('open'));
     });
-    // close mobile filter drawer on outside tap of the panel is left to CSS; keep simple
+    var fc = $('filterClose');
+    if (fc) fc.addEventListener('click', function () { setFilters(false); });
+    document.addEventListener('click', function (e) {
+      if (panel.classList.contains('open') &&
+          !panel.contains(e.target) && !ft.contains(e.target)) {
+        setFilters(false);
+      }
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && panel.classList.contains('open')) setFilters(false);
+    });
   }
 
   /* ---------- init ---------- */

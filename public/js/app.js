@@ -298,6 +298,8 @@ function renderHeader() {
       '<a href="/track.html" data-nav="track" data-i18n="nav.track">Track Order</a>' +
       (u ? '<a href="/orders.html" data-nav="orders" data-i18n="nav.orders">My Orders</a>' : '') +
       (u && (u.role === 'admin' || u.role === 'staff') ? '<a href="/admin/index.html" data-i18n="nav.admin">Admin</a>' : '') +
+      (u ? '' : '<a href="/login.html" class="nav-auth" data-i18n="nav.login">Log In</a>' +
+                 '<a href="/register.html" class="nav-auth" data-i18n="nav.register">Sign Up</a>') +
     '</nav>' +
     '<div class="header-actions">' +
       '<div class="lang-switch" role="group" aria-label="Language">' +
@@ -311,14 +313,22 @@ function renderHeader() {
 
   const navToggle = host.querySelector('#navToggle');
   const mainNav = host.querySelector('#mainNav');
+  const setNav = (open) => {
+    mainNav.classList.toggle('open', open);
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    document.body.style.overflow = open ? 'hidden' : '';
+  };
   navToggle.addEventListener('click', () => {
-    mainNav.classList.toggle('open');
+    setNav(!mainNav.classList.contains('open'));
   });
   document.addEventListener('click', (e) => {
     if (mainNav.classList.contains('open') &&
         !mainNav.contains(e.target) && !navToggle.contains(e.target)) {
-      mainNav.classList.remove('open');
+      setNav(false);
     }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mainNav.classList.contains('open')) setNav(false);
   });
   host.querySelectorAll('.lang-switch button').forEach(b => {
     b.addEventListener('click', () => setLang(b.dataset.lang));
